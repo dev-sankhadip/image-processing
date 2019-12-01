@@ -1,2 +1,2 @@
 # image-processing
-Image processing in php
+Image processing
