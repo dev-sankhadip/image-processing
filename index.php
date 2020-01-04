@@ -17,9 +17,8 @@
         }
     </style>
 </head>
-
 <body class="container-fluid p-4 bg-light">
-    <div class="row main">
+    <div class="row">
         <div class="col-md-3">
             <form>
                 <h4>Create Custom Image</h4>
@@ -32,14 +31,28 @@
                     <option>png</option>
                     <option>gif</option>
                 </select>
-                <button type="button" class="btn btn-primary">Generate</button>
+                <button type="button" class="btn btn-primary generate-btn" id="generate-btn">Generate</button>
             </form>
         </div>
         <div class="col-md-9 text-center bg-white shadow-sm overflow-auto">
             <div id="result" class="mt-5">
-
             </div>
         </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <form>
+                <h4>Resize Image</h4>
+                <hr>
+                <input type="file" class="form-control mb-4" id="image" required>
+                <input type="number" class="form-control mb-4" id="new_width" placeholder="Width" required>
+                <input type="number" class="form-control mb-4" id="new_height" placeholder="Height" required>
+                <button type="button" class="btn btn-primary">Resize now</button>
+            </form>
+        </div>
+        <!-- <div class="col-md-9 text-center bg-white shadow-sm overflow-auto">
+            
+        </div> -->
     </div>
     <script type="text/javascript">
         $(".main").css({
@@ -49,9 +62,9 @@
         {
             $(".main").css({
                 height: $(window).height()-50
-            }); 
+            });
         })
-        $("button").click(function() {
+        $("#generate-btn").click(function() {
             const width = $("#width").val();
             const height = $("#height").val();
             const color = $("#color").val();
@@ -62,7 +75,6 @@
             const red = parseInt(a, 16);
             const green = parseInt(b, 16);
             const black = parseInt(c, 16);
-
             $.ajax({
                 type: "POST",
                 url: 'php/image.php',
@@ -82,7 +94,6 @@
                     img.style.width="80%";
                     img.style.marginLeft="10%";
                     $("#result").append(img);
-
                     const a=document.createElement("a");
                     a.href="image/"+name;
                     a.download=name;
@@ -91,11 +102,40 @@
                     document.querySelector("#result").appendChild(a);
                 },
                 error: function() {
-
                 }
             })
         })
+    // upload file
+    $(document).ready(function()
+    {
+        $("#image").on('change', function(e)
+        {
+            var file=e.target.files[0];
+            var url=URL.createObjectURL(file);
+            var image=document.createElement("img");
+            image.src=url;
+            $("#result").html(image);
+            image.onload=function()
+            {
+                var o_width=image.width;
+                var o_height=image.height;
+                $("#new_width").on('input', function()
+                {
+                    var typedWidth=Number(this.value);
+                    var ratio=typedWidth/o_width;
+                    var rec_height=o_height*ratio;
+                    $("#new_height").val(rec_height);
+                    image.width=typedWidth;
+                    image.height=rec_height;
+                })
+                $("#new_height").on('input', function()
+                {
+                    var typedHeight=this.value;
+                    image.height=typedHeight;
+                })
+            }
+        })
+    })
     </script>
 </body>
-
 </html>

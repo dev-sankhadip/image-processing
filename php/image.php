@@ -1,15 +1,14 @@
 <?php
     $width=$_POST['width'];
     $height=$_POST['height'];
-    $format=$_POST['format'];
-    $red=$_POST['red'];
-    $green=$_POST['green'];
-    $black=$_POST['black'];
-
-    $raw_image=imagecreate($width,$height);
-    imagecolorallocate($raw_image, $red,$green,$black);
-    $ran=rand(1,2000);
-    if($format==='jpeg')
+    $r=$_POST['red'];
+    $g=$_POST['green'];
+    $b=$_POST['black'];
+    $format = $_POST['format'];
+    $raw_image = imagecreate($width,$height);
+    imagecolorallocate($raw_image,$r,$g,$b);
+    $ran = rand(0,500000);
+    if($format=="jpeg")
     {
         if(imagejpeg($raw_image,"../images/".$ran.".jpg"))
         {
@@ -17,15 +16,15 @@
         }
         imagedestroy($raw_image);
     }
-    else if($format==='png')
+    elseif($format=="png")
     {
-        if(imagepng($raw_image,"../images/".$ran.".png"))
+        if(imagepng($raw_image,"../images/".$ran.".jpg"))
         {
             echo $ran.".png";
         }
         imagedestroy($raw_image);
     }
-    else if($format==='gif')
+    elseif($format=="jpg")
     {
         if(imagegif($raw_image,"../images/".$ran.".gif"))
         {
@@ -33,4 +32,4 @@
         }
         imagedestroy($raw_image);
     }
-?>
+    ?>
