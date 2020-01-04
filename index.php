@@ -41,13 +41,13 @@
     </div>
     <div class="row">
         <div class="col-md-3">
-            <form>
-                <h4>Resize Image</h4>
-                <hr>
-                <input type="file" class="form-control mb-4" id="image" required>
-                <input type="number" class="form-control mb-4" id="new_width" placeholder="Width" required>
-                <input type="number" class="form-control mb-4" id="new_height" placeholder="Height" required>
-                <button type="button" class="btn btn-primary">Resize now</button>
+            <h4>Resize Image</h4>
+            <hr>
+            <form id="resize-form">
+                <input type="file" name="file-input" class="form-control mb-4" id="image" required>
+                <input type="number" name="new-width" class="form-control mb-4" id="new_width" placeholder="Width" required>
+                <input type="number" name=new-height class="form-control mb-4" id="new_height" placeholder="Height" required>
+                <button type="submit" class="btn btn-primary">Resize now</button>
             </form>
         </div>
         <!-- <div class="col-md-9 text-center bg-white shadow-sm overflow-auto">
@@ -88,7 +88,7 @@
                 },
                 success: function(res) {
                     document.getElementById("result").innerHTML="";
-                    const name=res;
+                    const name=res.trim();
                     const img=document.createElement("img");
                     img.src="images/"+name;
                     img.style.width="80%";
@@ -123,7 +123,7 @@
                 {
                     var typedWidth=Number(this.value);
                     var ratio=typedWidth/o_width;
-                    var rec_height=o_height*ratio;
+                    var rec_height=Math.floor(o_height*ratio);
                     $("#new_height").val(rec_height);
                     image.width=typedWidth;
                     image.height=rec_height;
@@ -134,6 +134,30 @@
                     image.height=typedHeight;
                 })
             }
+            $("#resize-form").submit(function(e)
+            {
+                e.preventDefault();
+                var c_width=document.getElementById("new_width").value;
+                var c_height=document.getElementById("new_height").value;
+                $.ajax({
+                    type:"POST",
+                    url:"php/resize.php",
+                    data:new FormData(this),
+                    processData:false,
+                    contentType:false,
+                    cache:false,
+                    success:function(res)
+                    {
+                        var link="images/"+res.trim();
+                        var a=document.createElement("a");
+                        a.href=link;
+                        a.download=res;
+                        a.innerHTML="Download now";
+                        a.className="btn btn-danger py-2 my-2";
+                        $("#result").append(a);
+                    }
+                })
+            })
         })
     })
     </script>
